@@ -9,7 +9,7 @@ from app import app, topSongsDAO
 
 @app.route('/', methods=['GET'])
 def hello_world():
-    return 'Hello World!'
+    return render_template("index.html")
 
 
 @app.route('/topsongs/api/v1.0/songs', methods=['GET'])
