@@ -1,9 +1,10 @@
-from flask import Flask, render_template
+from flask import render_template
 from pymongo import MongoClient
 import json
 from bson import json_util
 from bson.json_util import dumps
 
+from app import app 
 
 
 #TODO: Move connection details
@@ -13,14 +14,12 @@ DATABASE = 'songstohear'
 GUARDIAN_COLLECTION =  'guardiantop'
 PROJECTION = {'title' : True, 'theme' : True, 'year' : True, 'artist' : True, 'spotify_url.url' : True, '_id': False}
 
-app = Flask(__name__)
-
-@app.route('/')
+@app.route('/', methods=['GET'])
 def hello_world():
     return 'Hello World!'
 
 @app.route('/guardian/topsongs')
-def guardian_topsongs():
+def guardian_top_songs():
 	connection = MongoClient(MONGODB_HOST, MONGODB_PORT);
 	top_songs_collection = connection[DATABASE][GUARDIAN_COLLECTION];
 	top_songs = top_songs_collection.find(projection=PROJECTION)
@@ -34,6 +33,20 @@ def guardian_topsongs():
 	connection.close()
 	return json_top_songs;
 
-if __name__ == '__main__':
-    app.run()
-    
+def guardian_top_songs_count():
+	connection = MongoClient(MONGODB_HOST, MONGODB_PORT);
+	top_songs_collection = connection[DATABASE][GUARDIAN_COLLECTION];
+	top_songs_count = top_songs_collection.count()
+
+	return top_songs_count;
+
+
+
+# connection = MongoClient(MONGODB_HOST, MONGODB_PORT);
+# database = connection[DATABASE];
+
+# top_songs = topSongsDAO.topSongsDAO(database);
+
+
+# if __name__ == '__main__':
+#     app.run()
