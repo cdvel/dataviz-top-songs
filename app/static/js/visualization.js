@@ -14,6 +14,7 @@ queue()
 var yearlyChart = dc.barChart("#yearly-bar-chart");
 var themesChart = dc.pieChart("#themes-pie-chart");
 var artistChart = dc.rowChart("#artist-row-chart");
+var songsDataTable =  dc.dataTable("#songs-data-table");
 
 function visualize(error, data){
 	var topSongs = data["songs"];
@@ -37,6 +38,11 @@ function visualize(error, data){
 		return song["theme"].replace(" and ", " & ");
 
 	});	
+
+	var titleDimension =  xfilter.dimension(function (song){
+		return song["title"];
+	});	
+
 
 
 	var songCountByYear = yearDimension.group();
@@ -105,8 +111,27 @@ function visualize(error, data){
         .group(songCountByArtistTopFive)
         .xAxis().ticks(5);
 
-    dc.renderAll();
 
-    console.log(yearlyChart);
+    songsDataTable
+	    .dimension(titleDimension)
+	    .group(function(d) {
+	    	return Math.floor(d.year/10)*10+"s";
+    	})
+	    .size(50) //records to display
+	    .columns([
+	        function(s) { return s.year; },
+	        function(s) { 
+	        	if (s.url != "")
+	        		return '<a href=\"'+ s.url +'\" target=\"_blank\">'+s.title+'</a>';
+	        	else
+	        		return s.title;
+	        },
+	        function(s) { return s.artist; },
+	        function(s) { return s.theme; }
+	    ])
+	    .sortBy(function(s){ return s.artist; })
+	    .order(d3.ascending);
+
+    dc.renderAll();
 
 } //end visualize
