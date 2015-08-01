@@ -14,10 +14,10 @@ Loading songs into the databases
 
 	mongoimport --db songstohear --collection guardiantop --type json --file top1000.json --jsonArray
 
-### Dependencies
+### Prerequisites
 
 *Python*
 
-	pip install -r dependencies
+	pip install -r prerequisites
 
 - Flask
