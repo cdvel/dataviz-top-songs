@@ -1,82 +1,137 @@
+
+/*
+ * Loading data, and wait all to 
+ * start processing the visualization
+ */
 queue()
 	.defer(d3.json, "/top-songs/api/v1.0/songs")
 	.await(visualize);
 
+/*
+ * Build charts from dc
+ */
+
+var yearlyChart = dc.barChart("#yearly-bar-chart");
+var themesChart = dc.pieChart("#themes-pie-chart");
+var artistChart = dc.rowChart("#artist-row-chart");
+var songsDataTable =  dc.dataTable("#songs-data-table");
+
 function visualize(error, data){
-	var top_songs = data["songs"];
-	var formatter = d3.time.format("%Y");
+	var topSongs = data["songs"];
 
-	top_songs.forEach(function(song){
-		song["year"] = formatter.parse(song["year"]);
-		song["year"].setDate(1);
-	});
+	/*
+	 * Compute dimensions and groups
+	 *
+	 */
 
-	xfilter = crossfilter(top_songs);
-	var year_dimension =  xfilter.dimension(function (song){
+
+	xfilter = crossfilter(topSongs);
+	var yearDimension =  xfilter.dimension(function (song){
 		return song["year"];
 	});
-	var artist_dimension =  xfilter.dimension(function (song){
+	var artistDimension =  xfilter.dimension(function (song){
 		return song["artist"];
 	});	
 	
-	var theme_dimension =  xfilter.dimension(function (song){
+	var themeDimension =  xfilter.dimension(function (song){
 
 		return song["theme"].replace(" and ", " & ");
 
 	});	
 
+	var titleDimension =  xfilter.dimension(function (song){
+		return song["title"];
+	});	
 
-	var song_count_by_year = year_dimension.group();
-	var song_count_by_theme = theme_dimension.group();
-	var song_count_by_artist = artist_dimension.group();
+
+
+	var songCountByYear = yearDimension.group();
+	var songCountByTheme = themeDimension.group();
+	var songCountByArtist = artistDimension.group();
 
 	//workaround to limitaton of dc.js
-	function fake_top(source_group, n) {
+	function fakeTop(sourceGroup, n) {
 	    return {
 	        all: function () {
-	            return source_group.top(Infinity)
+	            return sourceGroup.top(Infinity)
 	                .slice(0, n);
 	        }
 	    };
 	}
 
-	var song_count_by_artist_top_five = fake_top(song_count_by_artist, 5);
+	var songCountByArtistTopFive = fakeTop(songCountByArtist, 5);
 
-	var year_origin = year_dimension.bottom(1)[0]["year"];
-	var year_end = year_dimension.top(1)[0]["year"];
+	/*
+	 * Obtain charts parameters
+	 *
+	 */
 
-	var yearly_chart = dc.barChart("#yearly-bar-chart");
-	var themes_chart = dc.pieChart("#themes-pie-chart");
-	var artist_chart = dc.rowChart("#artist-row-chart");
 
-	yearly_chart
+	var yearOrigin = yearDimension.bottom(1)[0]["year"];
+	var yearEnd = yearDimension.top(1)[0]["year"];
+
+
+	/*
+	 * Configure charts
+	 *
+	 */
+
+
+	yearlyChart
 		.width(818)
-		.height(240)
+		.height(260)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
-		.dimension(year_dimension)
-		.group(song_count_by_year)
+		.dimension(yearDimension)
+		.group(songCountByYear)
 		.transitionDuration(500)
-		.x(d3.time.scale().domain([year_origin, year_end]))
-		.elasticY(true)
+		.x(d3.time.scale().domain([yearOrigin, yearEnd]))
+		.brushOn(false)
 		.xAxisLabel("Year")
-		.yAxis().ticks(4);
+		.xAxis().tickFormat(d3.format("4d"));
+	
+	yearlyChart
+		.elasticY(true)
+		.yAxis()
+		.ticks(6)
+		.tickFormat(d3.format("d"))
+		.tickSubdivide(0);
 
-	themes_chart
+	themesChart
 		.width(300)
 		.height(300)
-		.dimension(theme_dimension)
-		.group(song_count_by_theme)
+		.dimension(themeDimension)
+		.group(songCountByTheme)
 		.transitionDuration(500)
 		.innerRadius(60)
 
-	artist_chart
+	artistChart
 		.width(393)
 		.height(240)
-        .dimension(artist_dimension)
-        .group(song_count_by_artist_top_five)
+        .dimension(artistDimension)
+        .group(songCountByArtistTopFive)
         .xAxis().ticks(5);
 
-    dc.renderAll();
 
+    songsDataTable
+	    .dimension(titleDimension)
+	    .group(function(d) {
+	    	return Math.floor(d.year/10)*10+"s";
+    	})
+	    .size(50) //records to display
+	    .columns([
+	        function(s) { return s.year; },
+	        function(s) { 
+	        	if (s.url != "")
+	        		return '<a href=\"'+ s.url +'\" target=\"_blank\">'+s.title+'</a>';
+	        	else
+	        		return s.title;
+	        },
+	        function(s) { return s.artist; },
+	        function(s) { return s.theme; }
+	    ])
+	    .sortBy(function(s){ return s.artist; })
+	    .order(d3.ascending);
+
+    dc.renderAll();
 
 } //end visualize
