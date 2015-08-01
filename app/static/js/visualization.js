@@ -4,12 +4,6 @@ queue()
 
 function visualize(error, data){
 	var top_songs = data["songs"];
-	var formatter = d3.time.format("%Y");
-
-	top_songs.forEach(function(song){
-		song["year"] = formatter.parse(song["year"]);
-		song["year"].setDate(1);
-	});
 
 	xfilter = crossfilter(top_songs);
 	var year_dimension =  xfilter.dimension(function (song){
@@ -45,6 +39,7 @@ function visualize(error, data){
 	var year_origin = year_dimension.bottom(1)[0]["year"];
 	var year_end = year_dimension.top(1)[0]["year"];
 
+
 	var yearly_chart = dc.barChart("#yearly-bar-chart");
 	var themes_chart = dc.pieChart("#themes-pie-chart");
 	var artist_chart = dc.rowChart("#artist-row-chart");
@@ -57,9 +52,16 @@ function visualize(error, data){
 		.group(song_count_by_year)
 		.transitionDuration(500)
 		.x(d3.time.scale().domain([year_origin, year_end]))
-		.elasticY(true)
+		.brushOn(false)
 		.xAxisLabel("Year")
-		.yAxis().ticks(4);
+		.xAxis().tickFormat(d3.time.format("%Y"));
+	
+	yearly_chart
+		.elasticY(true)
+		.yAxis()
+		.ticks(6)
+		.tickFormat(d3.format("d"))
+		.tickSubdivide(0);
 
 	themes_chart
 		.width(300)
