@@ -22,7 +22,7 @@
 #songs-data-table td, #songs-data-table th {
 	border-top-color: white;
 	border-bottom: 1px solid #DFDFDF;
-	width: 30.2%;
+	width: 20%;
 }
 #songs-data-table th {
 	text-shadow: rgba(255, 255, 255, 0.796875) 0px 1px 0px;

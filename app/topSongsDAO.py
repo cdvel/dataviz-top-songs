@@ -39,11 +39,15 @@ class TopSongsDAO:
             else:
                 song['url'] = ""
 
-            song_list.append({'title' : song['title'], 
-                     'theme' : song['theme'], 
-                     'year' : song['year'], 
-                     'artist' : song['artist'], 
-                     'url': song['url']})
+            song_list.append({  'title' : song['title'], 
+                                'theme' : song['theme'], 
+                                'year' : song['year'], 
+                                'artist' : song['artist'], 
+                                'url': song['url'],
+                                'playcount': song['playcount'],
+                                'listeners': song['listeners'],
+                                'last_update': song['last_update']
+                            })
 
         return song_list
 

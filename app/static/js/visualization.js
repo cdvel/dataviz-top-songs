@@ -43,11 +43,27 @@ function visualize(error, data){
 		return song["title"];
 	});	
 
+	var playcountDimension =  xfilter.dimension(function (song){
+		return song["playcount"];
+	});	
+
+	var listenersDimension =  xfilter.dimension(function (song){
+		return song["listeners"];
+	});
+
+	var lastUpdateDimension =  xfilter.dimension(function (song){
+		return song["lastUpdate"];
+	});
 
 
-	var songCountByYear = yearDimension.group();
-	var songCountByTheme = themeDimension.group();
-	var songCountByArtist = artistDimension.group();
+
+	var songsByYear = yearDimension.group();
+	var songsByTheme = themeDimension.group();
+	var songsByArtist = artistDimension.group();
+	var songsPlayCount = artistDimension.group();
+	var songsListeners = artistDimension.group();
+
+
 
 	//workaround to limitaton of dc.js
 	function fakeTop(sourceGroup, n) {
@@ -59,7 +75,7 @@ function visualize(error, data){
 	    };
 	}
 
-	var songCountByArtistTopFive = fakeTop(songCountByArtist, 5);
+	var songsByArtistTopFive = fakeTop(songsByArtist, 5);
 
 	/*
 	 * Obtain charts parameters
@@ -82,7 +98,7 @@ function visualize(error, data){
 		.height(260)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
 		.dimension(yearDimension)
-		.group(songCountByYear)
+		.group(songsByYear)
 		.transitionDuration(500)
 		.x(d3.time.scale().domain([yearOrigin, yearEnd]))
 		.brushOn(false)
@@ -100,7 +116,7 @@ function visualize(error, data){
 		.width(300)
 		.height(300)
 		.dimension(themeDimension)
-		.group(songCountByTheme)
+		.group(songsByTheme)
 		.transitionDuration(500)
 		.innerRadius(60)
 
@@ -108,7 +124,7 @@ function visualize(error, data){
 		.width(393)
 		.height(240)
         .dimension(artistDimension)
-        .group(songCountByArtistTopFive)
+        .group(songsByArtistTopFive)
         .xAxis().ticks(5);
 
 
@@ -127,7 +143,9 @@ function visualize(error, data){
 	        		return s.title;
 	        },
 	        function(s) { return s.artist; },
-	        function(s) { return s.theme; }
+	        function(s) { return s.theme; },
+	        function(s) { return d3.format(",")(s.playcount)+" plays  /  "+d3.format(",")(s.listeners)+" listeners"; }
+	        
 	    ])
 	    .sortBy(function(s){ return s.artist; })
 	    .order(d3.ascending);
