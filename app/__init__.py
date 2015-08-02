@@ -11,6 +11,7 @@ database = connection[DATABASE]
 
 dao = topSongsDAO.TopSongsDAO(database);
 
+# uncomment to trigger updates
 # dao.update_song_stats("");
 
 from views import endpoints

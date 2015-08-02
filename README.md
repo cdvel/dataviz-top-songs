@@ -1,23 +1,45 @@
-# Songs to Head Before you Die
+# Top Songs to Hear Before you Die 
+
+
+##Overview
+
+An interactive visualization of songs including playcount and listener statistics
 
 
 
-## Data sources
+###The data sources
 
-[Top 1,000 Songs To Hear Before You Die](https://opendata.socrata.com/Fun/Top-1-000-Songs-To-Hear-Before-You-Die/ed74-c6ni)
-A list of the Guardian's "Top 1,000 Songs to Hear Before You Die"
+The data sources for this visualization are [The Guardian's top 1000 songs to hear before you die](https://opendata.socrata.com/Fun/Top-1-000-Songs-To-Hear-Before-You-Die/ed74-c6ni) dataset for the track listing and the [last.fm Open API](www.last.fm/api) for the play statistics. Play counts and listener statistics were retrieved programatically with code included in this project.
+    
+###  Technologies used
 
+The frontend was built using [dc.js](https://github.com/dc-js/dc.js) (charting), [crossfilter.js](https://square.github.io/crossfilter/) , [d3.js](http://d3js.org), and others. The backend was built in [Python](http://python.org), using the [Flask](http://flask.pocoo.org) microframework and [MongoDB](http://mongodb.com)</a>.
+    
 
-## Step by step guide
+## Requisites
 
-Loading songs into the databases
+    Python 2.7
+    MongoDB
+    Tested on Linux, Windows
 
-	mongoimport --db songstohear --collection guardiantop --type json --file top1000.json --jsonArray
+## Installation
 
-### Prerequisites
+To run this project in your machine, you need require a mongodb installation and python
 
-*Python*
+A database dump is included in this project and can be imported with `mongoimport`:
+
+	mongoimport --db songstohear --collection guardiantop --type json --file topsongs.json --jsonArray
+
+Python prequisites could be installed via pip with
 
 	pip install -r prerequisites
 
-- Flask
+### Running
+
+	
+	python run.py
+
+
+## Todo
+
+-	Implement a celery-based task runner to schedule statistic updates

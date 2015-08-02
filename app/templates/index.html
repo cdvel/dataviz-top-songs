@@ -26,7 +26,9 @@
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-left">
-          <li><a href="">About</a></li>
+          <li>
+          <a href="#aboutModal" role="button" data-toggle="modal">About</a>
+          </li>
           <li><a href="https://github.com/cesarvelandia/top-songs">Source Code</a></li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
@@ -138,15 +140,40 @@
       </div>
     </div>
   </div>
+  </div>
 
+    <div id="aboutModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">About this project</h4>
+                </div>
+                <div class="modal-body">
+
+                <h4>
+                  The data sources
+                </h4>
+                    <p>The data sources for this visualization are <a href="https://opendata.socrata.com/Fun/Top-1-000-Songs-To-Hear-Before-You-Die/ed74-c6ni">The Guardian's top 1000 songs to hear before you die </a>dataset for the track listing and the <a href="www.last.fm/api">last.fm Open API</a> for the play statistics. Play counts and listener statistics were retrieved programatically with code included in this project.</p>
+                    
+                <hr></hr>
+                <h4>
+                  Technologies used
+                </h4>
+                    <p>The frontend was built using <a href="https://github.com/dc-js/dc.js">dc.js</a> (charting), <a href="https://square.github.io/crossfilter/">crossfilter.js</a> , <a href="http://d3js.org">d3.js</a>, and others. The backend was built in <a href="http://python.org"> Python</a>, using the <a href="http://flask.pocoo.org">Flask</a> microframework and <a href="http://mongodb.com"> MongoDB</a>.</p>
+                    <br></br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-  </div>
-  <script type="text/javascript" src="../../static/lib/js/holder.js"></script>
-  <script>
-    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
-  </script>
 
+
+  </div>
+  
   <script src="../../static/lib/js/jquery.min.js"></script>
   <script src="../../static/lib/js/bootstrap.min.js"></script>
   <script src="../../static/lib/js/crossfilter.js"></script>
