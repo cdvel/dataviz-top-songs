@@ -1,5 +1,8 @@
 # Top Songs to Hear Before you Die 
 
+![alt tag](https://cloud.githubusercontent.com/assets/10421005/9026152/f7b203cc-3956-11e5-928a-96eca51482d4.png)
+![alt tag](https://cloud.githubusercontent.com/assets/10421005/9026154/fde20364-3956-11e5-88a8-ec53a3403760.png)
+![alt tag](https://cloud.githubusercontent.com/assets/10421005/9026156/01cfb426-3957-11e5-9335-74c4870041d7.png)
 
 ##Overview
 
