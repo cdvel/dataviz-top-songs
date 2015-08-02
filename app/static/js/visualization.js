@@ -15,6 +15,20 @@ var yearlyChart = dc.barChart("#yearly-bar-chart");
 var themesChart = dc.pieChart("#themes-pie-chart");
 var artistChart = dc.rowChart("#artist-row-chart");
 var songsDataTable =  dc.dataTable("#songs-data-table");
+var playcountChart = dc.bubbleChart("#playcount-bubble-chart");
+
+var TOP_ARTIST_COUNT = 20;
+
+function resetAll(){
+
+	yearlyChart.filterAll();
+	themesChart.filterAll();
+	artistChart.filterAll();
+	songsDataTable.filterAll();
+	playcountChart.filterAll();
+
+	dc.renderAll();	
+}
 
 function visualize(error, data){
 	var topSongs = data["songs"];
@@ -34,9 +48,7 @@ function visualize(error, data){
 	});	
 	
 	var themeDimension =  xfilter.dimension(function (song){
-
 		return song["theme"].replace(" and ", " & ");
-
 	});	
 
 	var titleDimension =  xfilter.dimension(function (song){
@@ -44,13 +56,32 @@ function visualize(error, data){
 	});	
 
 
+	var songsByYear = yearDimension.group();
+	var songsByTheme = themeDimension.group();
+	var songsByArtist = artistDimension.group();
+	
+	// group by artist; values from	playcount
+	var playcountDimensionGroup = artistDimension.group().reduce(
+		function(p,v){
+			++p.count;
+			p.playcountSum += v.playcount;
+			p.playcountAvg = p.playcountSum / p.count;
+			return p;
+		},
+		function(p,v){
+			--p.count;
+			p.playcountSum -= v.playcount;
+			p.playcountAvg = p.playcountSum / p.count;
+			return p;
+		},
+		function(p,v){
+			return {count:0, playcountSum: 0, playcountAvg: 0};
+		}
+	);
 
-	var songCountByYear = yearDimension.group();
-	var songCountByTheme = themeDimension.group();
-	var songCountByArtist = artistDimension.group();
 
 	//workaround to limitaton of dc.js
-	function fakeTop(sourceGroup, n) {
+	function getNTop(sourceGroup, n) {
 	    return {
 	        all: function () {
 	            return sourceGroup.top(Infinity)
@@ -59,10 +90,10 @@ function visualize(error, data){
 	    };
 	}
 
-	var songCountByArtistTopFive = fakeTop(songCountByArtist, 5);
+	var topArtists = getNTop(songsByArtist, TOP_ARTIST_COUNT);
 
 	/*
-	 * Obtain charts parameters
+	 * Obtain chart parameters
 	 *
 	 */
 
@@ -70,7 +101,10 @@ function visualize(error, data){
 	var yearOrigin = yearDimension.bottom(1)[0]["year"];
 	var yearEnd = yearDimension.top(1)[0]["year"];
 
-
+	var playcountDomain = d3.max(playcountDimensionGroup.all(), function(d) { return d.value.playcountAvg*1.1; }) + 1;
+	var playcountSumDomain = d3.max(playcountDimensionGroup.all(), function(d) { return d.value.playcountSum*1.2; }) + 1;
+	millionFormatter = d3.format(".2s");
+	
 	/*
 	 * Configure charts
 	 *
@@ -79,18 +113,24 @@ function visualize(error, data){
 
 	yearlyChart
 		.width(818)
-		.height(260)
+		.height(300)
 		.margins({top: 10, right: 50, bottom: 30, left: 50})
 		.dimension(yearDimension)
-		.group(songCountByYear)
+		.group(songsByYear)
 		.transitionDuration(500)
 		.x(d3.time.scale().domain([yearOrigin, yearEnd]))
-		.brushOn(false)
-		.xAxisLabel("Year")
+		.brushOn(true)
+        .renderTitle(true)
+        .renderHorizontalGridLines(true)
+        .renderVerticalGridLines(true)
+
+	yearlyChart
+    	.xAxisLabel("Year")
 		.xAxis().tickFormat(d3.format("4d"));
 	
 	yearlyChart
 		.elasticY(true)
+		.yAxisLabel("Number of Songs")	
 		.yAxis()
 		.ticks(6)
 		.tickFormat(d3.format("d"))
@@ -100,17 +140,65 @@ function visualize(error, data){
 		.width(300)
 		.height(300)
 		.dimension(themeDimension)
-		.group(songCountByTheme)
+		.group(songsByTheme)
 		.transitionDuration(500)
 		.innerRadius(60)
+		.label(function(d) {
+		    return d.data.key + ' ' + Math.round((d.endAngle - d.startAngle) / Math.PI * 50) + '%';
+		});
 
 	artistChart
 		.width(393)
-		.height(240)
+		.height(500)
         .dimension(artistDimension)
-        .group(songCountByArtistTopFive)
-        .xAxis().ticks(5);
+        .group(topArtists)
 
+    artistChart.xAxis().ticks(5);
+
+	playcountChart
+			.width(818)
+			.height(500)
+			.margins({top: 10, right: 30, bottom: 30, left: 50})
+			.dimension(artistDimension)
+			.group(playcountDimensionGroup)
+			.transitionDuration(1500)
+			.colors(["#fdae61","#fee090","#e0f3f8","#abd9e9","#74add1","#4575b4"])
+ 			.colorDomain([0, 20])
+			.keyAccessor(function (p) {	return p.value.playcountAvg; }) //x 
+			.x(d3.scale.pow().exponent(.4).domain([0,playcountDomain]))
+			.valueAccessor(function (p) {return p.value.playcountSum;}) //y
+			.y(d3.scale.sqrt().domain([0,playcountSumDomain]))
+			.radiusValueAccessor(function (p) {return p.value.count/10;}) //r
+			.r(d3.scale.linear().domain([0,5]))
+			.colorAccessor(function (d) {
+        			return d.value.count;
+      		})
+			.title(function (p) {
+
+                    return [
+                           p.value.count + " songs in this list",
+                           millionFormatter(p.value.playcountSum) + " total plays",
+                           millionFormatter(Math.floor(p.value.playcountAvg))+ " average plays per song",
+                           ]
+                           .join("\n");
+                })
+            .renderTitle(true)
+            .renderHorizontalGridLines(true)
+            .renderVerticalGridLines(true);
+        
+
+	playcountChart
+			// .yAxisPadding(55000000)
+			// .elasticY(false) //needed for log scales
+			.yAxisLabel("Total Plays")
+			.yAxis().tickFormat(function(d) { return millionFormatter(d)});
+
+	playcountChart
+			// .xAxisPadding(5)
+			// .elasticX(true)
+			.xAxisLabel("Average Plays per Song")
+			.xAxis().tickFormat(function(d) { return millionFormatter(d)});
+					
 
     songsDataTable
 	    .dimension(titleDimension)
@@ -127,10 +215,15 @@ function visualize(error, data){
 	        		return s.title;
 	        },
 	        function(s) { return s.artist; },
-	        function(s) { return s.theme; }
+	        function(s) { return s.theme; },
+	        function(s) { return d3.format(",")(s.playcount); },
+	        function(s) { return d3.format(",")(s.listeners); }
+	        
 	    ])
-	    .sortBy(function(s){ return s.artist; })
-	    .order(d3.ascending);
+		.order(d3.descending)
+		     .sortBy(function (d) {
+		           return +d.playcount;
+		});
 
     dc.renderAll();
 

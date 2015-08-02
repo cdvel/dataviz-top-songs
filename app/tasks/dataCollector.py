@@ -26,8 +26,12 @@ class DataCollector:
 			print  "%r - %r : %r"%(artist_name, song_name, payload['message'])
 
 		else:
-			stats['listeners'] = payload['track']['listeners']
-			stats['playcount'] = payload['track']['playcount']
+			# the service may return empty strings
+			if payload['track']['listeners']:
+				stats['listeners'] = payload['track']['listeners']
+
+			if payload['track']['playcount']:
+				stats['playcount'] = payload['track']['playcount']
 
 		return stats
 

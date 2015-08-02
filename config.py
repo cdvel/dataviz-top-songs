@@ -22,4 +22,13 @@ else:
 
 DATABASE = 'songstohear'
 COLLECTION_NAME =  'guardiantop'
-DEFAULT_PROJECTION = {'title' : True, 'theme' : True, 'year' : True, 'artist' : True, 'spotify_url.url' : True, '_id': False}
+DEFAULT_PROJECTION = {  'title' : True,
+                        'theme' : True,
+                        'year' : True,
+                        'artist' : True,
+                        'spotify_url.url' : True,
+                        'playcount': True,
+                        'listeners': True,
+                        'last_update': True,
+                        '_id': False
+                    }

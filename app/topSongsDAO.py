@@ -39,11 +39,15 @@ class TopSongsDAO:
             else:
                 song['url'] = ""
 
-            song_list.append({'title' : song['title'], 
-                     'theme' : song['theme'], 
-                     'year' : song['year'], 
-                     'artist' : song['artist'], 
-                     'url': song['url']})
+            song_list.append({  'title' : song['title'], 
+                                'theme' : song['theme'], 
+                                'year' : song['year'], 
+                                'artist' : song['artist'], 
+                                'url': song['url'],
+                                'playcount': song['playcount'],
+                                'listeners': song['listeners'],
+                                'last_update': song['last_update']
+                            })
 
         return song_list
 
@@ -56,11 +60,13 @@ class TopSongsDAO:
         for song in cursor:
             stats = collector.getTrackStats(song['artist'], song['title']);
             try:
+
+
                 updates = self.top_songs.update({'_id': song['_id']}, 
                                             {  '$set':
                                                 {
-                                                    'listeners': stats['listeners'],
-                                                    'playcount': stats['playcount'],
+                                                    'listeners': int(stats['listeners']),
+                                                    'playcount': int(stats['playcount']),
                                                     "last_update" : datetime.now()
                                                 }
                                             })

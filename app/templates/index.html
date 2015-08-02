@@ -26,8 +26,16 @@
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-left">
-          <li><a href="">About</a></li>
-          <li><a href="https://github.com/cesarvelandia/top-songs">Repo</a></li>
+          <li>
+          <a href="#aboutModal" role="button" data-toggle="modal">About</a>
+          </li>
+          <li><a href="https://github.com/cesarvelandia/top-songs">Source Code</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li>
+          <a href="javascript:resetAll();" class="btn btn-secondary btn-sm">
+          <i class="icon icon-check"></i> Reset All
+          </a> </li>
         </ul>
       </div>
     </div>
@@ -36,28 +44,51 @@
   <div class="container-fluid">
 
     <div class="row">
+
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Theme distribution
+            <a class="btn btn-primary btn-xs" href="javascript:themesChart.filterAll(); dc.renderAll();">reset</a>
+          </div>
+          <div class="chart-stage">
+            <div id="themes-pie-chart"></div>
+        </div>
+          <div class="chart-notes">
+            Click on slices to filter out by song themes
+          </div>
+        </div>
+        </div>
+
       <div class="col-sm-8">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Hits by Year
+            Number of top songs over time
+            <a class="btn btn-primary btn-xs" href="javascript:yearlyChart.filterAll(); dc.renderAll();">reset</a>
+
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
               <div id="yearly-bar-chart">
               </div>
-              <!-- <img data-src="holder.js/100%x240/white">            -->
             </div>
           </div>
           <div class="chart-notes">
-            Most prolific years in recent music history
+            Drag your cursor accross the screen to filter by years
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+
+      </div> <!-- end row -->
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Top Artists
-            <a class="reset" href="javascript:artistChart.filterAll(); dc.renderAll();">reset</a>
+            Top Artists [A-Z]
+            <a class="btn btn-primary btn-xs" href="javascript:artistChart.filterAll(); dc.renderAll();">reset</a>
           </div>
           <div class="chart-stage">
             <div id="artist-row-chart">
@@ -65,81 +96,84 @@
             </div>
           </div>
           <div class="chart-notes">
-            Most listened artists
+            Select an artist or multiple artists to filter upper charts 
             </div>
           </div>
-        </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6 col-md-4">
+      <div class="col-sm-8">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Themes
-            <a class="reset" href="javascript:themesChart.filterAll(); dc.renderAll();">reset</a>
+            Most played artists (Average song playcount vs. total artist song plays)
+            <a class="btn btn-primary btn-xs" href="javascript:playcountChart.filterAll(); dc.renderAll();">reset</a>
           </div>
           <div class="chart-stage">
-            <div id="themes-pie-chart"></div>
-        </div>
+            <div id="playcount-bubble-chart"></div>
+          </div>
           <div class="chart-notes">
-            What kind of music people listen to?
+            Click a bubble to filter other charts and table by artist
+            
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Most liked artists
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Latest trends in Music
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Details
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            More information
-          </div>
-        </div>
-      </div>
-
   </div>
 
   <div class="row">
   <div class="col-sm-12">
     <div class="chart-wrapper">
       <div class="chart-title">
-        Song samples
+        Song samples by decade (up to 50)
       </div>
       <div class="chart-stage">
-        <div id="songs-data-table">
-        </div>
-      </div>
+      <table id="songs-data-table">
+      <thead>
+      <tr class="header">
+        <th>Year(s)</th>
+        <th>Song Title</th>
+        <th>Artist</th>
+        <th>Theme</th>
+        <th>Total plays &darr;</th>
+        <th>Total listeners</th>
+      <thead>
+      </table>
       <div class="chart-notes">
         
       </div>
     </div>
   </div>
+  </div>
 
+    <div id="aboutModal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">About this project</h4>
+                </div>
+                <div class="modal-body">
+
+                <h4>
+                  The data sources
+                </h4>
+                    <p>The data sources for this visualization are <a href="https://opendata.socrata.com/Fun/Top-1-000-Songs-To-Hear-Before-You-Die/ed74-c6ni">The Guardian's top 1000 songs to hear before you die </a>dataset for the track listing and the <a href="www.last.fm/api">last.fm Open API</a> for the play statistics. Play counts and listener statistics were retrieved programatically with code included in this project.</p>
+                    
+                <hr></hr>
+                <h4>
+                  Technologies used
+                </h4>
+                    <p>The frontend was built using <a href="https://github.com/dc-js/dc.js">dc.js</a> (charting), <a href="https://square.github.io/crossfilter/">crossfilter.js</a> , <a href="http://d3js.org">d3.js</a>, and others. The backend was built in <a href="http://python.org"> Python</a>, using the <a href="http://flask.pocoo.org">Flask</a> microframework and <a href="http://mongodb.com"> MongoDB</a>.</p>
+                    <br></br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
-  </div>
-  <script type="text/javascript" src="../../static/lib/js/holder.js"></script>
-  <script>
-    Holder.add_theme("white", { background:"#fff", foreground:"#a7a7a7", size:10 });
-  </script>
 
+
+  </div>
+  
   <script src="../../static/lib/js/jquery.min.js"></script>
   <script src="../../static/lib/js/bootstrap.min.js"></script>
   <script src="../../static/lib/js/crossfilter.js"></script>
@@ -149,6 +183,5 @@
 
   <script src="../../static/lib/js/keen.min.js"></script>
   <script src='../../static/js/visualization.js' type='text/javascript'></script>
-
 </body>
 </html>
