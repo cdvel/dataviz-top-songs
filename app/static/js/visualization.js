@@ -199,11 +199,19 @@ function visualize(error, data){
 	        },
 	        function(s) { return s.artist; },
 	        function(s) { return s.theme; },
-	        function(s) { return d3.format(",")(s.playcount)+" plays  /  "+d3.format(",")(s.listeners)+" listeners"; }
+	        function(s) { return d3.format(",")(s.playcount)+" plays" ; },
+	        function(s) { return d3.format(",")(s.listeners)+" listeners"; }
 	        
 	    ])
-	    .sortBy(function(s){ return s.artist; })
-	    .order(d3.ascending);
+	 //    .sortBy(function (d) {
+  //   		return [d.playcount,d.year].join();
+		// });
+		.order(d3.descending)
+		     .sortBy(function (d) {
+		           return +d.playcount;
+		});
+	    // .sortBy(function(s){ return parseInt(s.playcount);})
+	    // .order(d3.ascending);
 
 
     dc.renderAll();
