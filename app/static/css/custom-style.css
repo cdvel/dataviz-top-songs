@@ -1,12 +1,12 @@
 .dc-chart .pie-slice {
-    fill: white;
+    fill: black;
     font-size: 11px;
     cursor: pointer;
 }
 
-.reset {
-	font-size: 10px;
-	text-decoration: underline;
+.chart-title {
+	font-size: 18px;
+	background-color: #DFDFDF;
 }
 
 .dc-chart g.row text {

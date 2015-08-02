@@ -19,6 +19,17 @@ var playcountChart = dc.bubbleChart("#playcount-bubble-chart");
 
 var TOP_ARTIST_COUNT = 20;
 
+function resetAll(){
+
+	yearlyChart.filterAll();
+	themesChart.filterAll();
+	artistChart.filterAll();
+	songsDataTable.filterAll();
+	playcountChart.filterAll();
+
+	dc.renderAll();	
+}
+
 function visualize(error, data){
 	var topSongs = data["songs"];
 
@@ -90,8 +101,8 @@ function visualize(error, data){
 	var yearOrigin = yearDimension.bottom(1)[0]["year"];
 	var yearEnd = yearDimension.top(1)[0]["year"];
 
-	var playcountDomain = d3.max(playcountDimensionGroup.all(), function(d) { return d.value.playcountAvg; }) + 1;
-	var playcountSumDomain = d3.max(playcountDimensionGroup.all(), function(d) { return d.value.playcountSum; }) + 1;
+	var playcountDomain = d3.max(playcountDimensionGroup.all(), function(d) { return d.value.playcountAvg*1.1; }) + 1;
+	var playcountSumDomain = d3.max(playcountDimensionGroup.all(), function(d) { return d.value.playcountSum*1.2; }) + 1;
 	millionFormatter = d3.format(".2s");
 	
 	/*
@@ -132,6 +143,9 @@ function visualize(error, data){
 		.group(songsByTheme)
 		.transitionDuration(500)
 		.innerRadius(60)
+		.label(function(d) {
+		    return d.data.key + ' ' + Math.round((d.endAngle - d.startAngle) / Math.PI * 50) + '%';
+		});
 
 	artistChart
 		.width(393)
@@ -148,14 +162,17 @@ function visualize(error, data){
 			.dimension(artistDimension)
 			.group(playcountDimensionGroup)
 			.transitionDuration(1500)
-			.colors(["#a60000","#ff0000", "#ff4040","#ff7373","#67e667","#39e639","#00cc00"])
-			.colorDomain([-12000, 12000])
+			.colors(["#fdae61","#fee090","#e0f3f8","#abd9e9","#74add1","#4575b4"])
+ 			.colorDomain([0, 20])
 			.keyAccessor(function (p) {	return p.value.playcountAvg; }) //x 
-			.x(d3.scale.sqrt().domain([0,playcountDomain]))
+			.x(d3.scale.pow().exponent(.4).domain([0,playcountDomain]))
 			.valueAccessor(function (p) {return p.value.playcountSum;}) //y
 			.y(d3.scale.sqrt().domain([0,playcountSumDomain]))
 			.radiusValueAccessor(function (p) {return p.value.count/10;}) //r
-			.r(d3.scale.linear().domain([0,25]))
+			.r(d3.scale.linear().domain([0,5]))
+			.colorAccessor(function (d) {
+        			return d.value.count;
+      		})
 			.title(function (p) {
 
                     return [
@@ -171,14 +188,14 @@ function visualize(error, data){
         
 
 	playcountChart
-			.yAxisPadding(1)
-			.elasticY(false) //needed for log scales
+			// .yAxisPadding(55000000)
+			// .elasticY(false) //needed for log scales
 			.yAxisLabel("Total Plays")
 			.yAxis().tickFormat(function(d) { return millionFormatter(d)});
 
 	playcountChart
-			.xAxisPadding(1)
-			.elasticX(true)
+			// .xAxisPadding(5)
+			// .elasticX(true)
 			.xAxisLabel("Average Plays per Song")
 			.xAxis().tickFormat(function(d) { return millionFormatter(d)});
 					
@@ -199,20 +216,14 @@ function visualize(error, data){
 	        },
 	        function(s) { return s.artist; },
 	        function(s) { return s.theme; },
-	        function(s) { return d3.format(",")(s.playcount)+" plays" ; },
-	        function(s) { return d3.format(",")(s.listeners)+" listeners"; }
+	        function(s) { return d3.format(",")(s.playcount); },
+	        function(s) { return d3.format(",")(s.listeners); }
 	        
 	    ])
-	 //    .sortBy(function (d) {
-  //   		return [d.playcount,d.year].join();
-		// });
 		.order(d3.descending)
 		     .sortBy(function (d) {
 		           return +d.playcount;
 		});
-	    // .sortBy(function(s){ return parseInt(s.playcount);})
-	    // .order(d3.ascending);
-
 
     dc.renderAll();
 
