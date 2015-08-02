@@ -9,7 +9,7 @@ An interactive visualization of songs including playcount and listener statistic
 
 ###The data sources
 
-The data sources for this visualization are [The Guardian's top 1000 songs to hear before you die](https://opendata.socrata.com/Fun/Top-1-000-Songs-To-Hear-Before-You-Die/ed74-c6ni) dataset for the track listing and the [last.fm Open API](www.last.fm/api) for the play statistics. Play counts and listener statistics were retrieved programatically with code included in this project.
+The data sources for this visualization are [The Guardian's top 1000 songs to hear before you die](https://opendata.socrata.com/Fun/Top-1-000-Songs-To-Hear-Before-You-Die/ed74-c6ni) dataset for the track listing and the [last.fm Open API](http://last.fm/api) for the play statistics. Play counts and listener statistics were retrieved programatically with code included in this project.
     
 ###  Technologies used
 
@@ -18,13 +18,11 @@ The frontend was built using [dc.js](https://github.com/dc-js/dc.js) (charting),
 
 ## Requisites
 
-    Python 2.7
+    Python 2.7+
     MongoDB
     Tested on Linux, Windows
 
 ## Installation
-
-To run this project in your machine, you need require a mongodb installation and python
 
 A database dump is included in this project and can be imported with `mongoimport`:
 
