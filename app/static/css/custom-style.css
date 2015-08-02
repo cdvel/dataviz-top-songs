@@ -9,6 +9,10 @@
 	text-decoration: underline;
 }
 
+.dc-chart g.row text {
+    fill: black;
+}
+
 /*table*/
 
 #songs-data-table {

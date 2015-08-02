@@ -36,10 +36,28 @@
   <div class="container-fluid">
 
     <div class="row">
+
+      <div class="col-sm-4">
+        <div class="chart-wrapper">
+          <div class="chart-title">
+            Theme distribution
+            <a class="reset" href="javascript:themesChart.filterAll(); dc.renderAll();">reset</a>
+          </div>
+          <div class="chart-stage">
+            <div id="themes-pie-chart"></div>
+        </div>
+          <div class="chart-notes">
+            Click on slices to filter out by song themes
+          </div>
+        </div>
+        </div>
+
       <div class="col-sm-8">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Hits by Year
+            Number of top songs over time
+            <a class="reset" href="javascript:yearlyChart.filterAll(); dc.renderAll();">reset</a>
+
           </div>
           <div class="chart-stage">
             <div id="grid-1-1">
@@ -48,14 +66,20 @@
             </div>
           </div>
           <div class="chart-notes">
-            Most prolific years in recent music history
+            Drag your cursor accross the screen to filter by years
           </div>
         </div>
       </div>
-      <div class="col-sm-4">
+
+      </div> <!-- end row -->
+
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6 col-md-4">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Top Artists
+            Top Artists [A-Z]
             <a class="reset" href="javascript:artistChart.filterAll(); dc.renderAll();">reset</a>
           </div>
           <div class="chart-stage">
@@ -64,62 +88,31 @@
             </div>
           </div>
           <div class="chart-notes">
-            Most listened artists
+            Select an artist or multiple artists to filter upper charts 
             </div>
           </div>
-        </div>
       </div>
-    </div>
-
-    <div class="row">
-      <div class="col-sm-6 col-md-4">
+      <div class="col-sm-8">
         <div class="chart-wrapper">
           <div class="chart-title">
-            Themes
-            <a class="reset" href="javascript:themesChart.filterAll(); dc.renderAll();">reset</a>
+            Most played artists (Average song playcount vs. total artist song plays)
+            <a class="reset" href="javascript:playcountChart.filterAll(); dc.renderAll();">reset</a>
           </div>
           <div class="chart-stage">
-            <div id="themes-pie-chart"></div>
-        </div>
+            <div id="playcount-bubble-chart"></div>
+          </div>
           <div class="chart-notes">
-            What kind of music people listen to?
+            Click a bubble to filter other charts and table by artist <a href="last.fm"></a>
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Most liked artists
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            Latest trends in Music
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-md-4">
-        <div class="chart-wrapper">
-          <div class="chart-title">
-            Details
-          </div>
-          <div class="chart-stage">
-            <img data-src="holder.js/100%x120/white">
-          </div>
-          <div class="chart-notes">
-            More information
-          </div>
-        </div>
-      </div>
-
   </div>
 
   <div class="row">
   <div class="col-sm-12">
     <div class="chart-wrapper">
       <div class="chart-title">
-        Song samples
+        Song samples by decade (up to 50)
       </div>
       <div class="chart-stage">
         <div id="songs-data-table">

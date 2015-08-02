@@ -60,11 +60,13 @@ class TopSongsDAO:
         for song in cursor:
             stats = collector.getTrackStats(song['artist'], song['title']);
             try:
+
+
                 updates = self.top_songs.update({'_id': song['_id']}, 
                                             {  '$set':
                                                 {
-                                                    'listeners': stats['listeners'],
-                                                    'playcount': stats['playcount'],
+                                                    'listeners': int(stats['listeners']),
+                                                    'playcount': int(stats['playcount']),
                                                     "last_update" : datetime.now()
                                                 }
                                             })
