@@ -5,8 +5,6 @@ from config import COLLECTION_NAME, DEFAULT_PROJECTION
 import sys
 
 
-#TODO: add exception handling
-
 # Handles access to the top_songs collection
 class TopSongsDAO:
 
@@ -52,18 +50,16 @@ class TopSongsDAO:
         return song_list
 
     #retrieves updates for songs in the database
-    def update_all_song_stats(self, stats):
+    def update_all_song_stats(self):
         cursor = self.top_songs.find()
-        collector  = dataCollector.DataCollector()
+        collector = dataCollector.DataCollector()
         counter = 0
 
         for song in cursor:
-            stats = collector.getTrackStats(song['artist'], song['title']);
+            stats = collector.get_track_stats(song['artist'], song['title']);
             try:
-
-
                 updates = self.top_songs.update({'_id': song['_id']}, 
-                                            {  '$set':
+                                                {'$set':
                                                 {
                                                     'listeners': int(stats['listeners']),
                                                     'playcount': int(stats['playcount']),
@@ -71,7 +67,7 @@ class TopSongsDAO:
                                                 }
                                             })
 
-                counter += updates["Modified"]
+                counter += updates["nModified"]
 
             except:
                 print "Could not update the collection, error"
