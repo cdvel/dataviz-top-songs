@@ -33,7 +33,7 @@ A database dump is included in this project and can be imported with `mongoimpor
 
 Python prequisites could be installed via pip with
 
-	pip install -r prerequisites
+	pip install -r requirements.txt
 
 ### Running
 
