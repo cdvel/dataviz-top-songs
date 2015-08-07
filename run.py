@@ -1,3 +1,5 @@
 from app import app
+from os import environ
+from config import PORT
 
-app.run(host='0.0.0.0', port=8088)
+app.run(debug=False, host='0.0.0.0', port=PORT, processes=1)

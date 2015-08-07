@@ -1,15 +1,17 @@
 from flask import Flask
 from pymongo import MongoClient
-from config import basedir, MONGODB_HOST, MONGODB_PORT, DATABASE
+from config import CONNECTION_STRING, DATABASE
 import topSongsDAO
 
 app = Flask(__name__)
 app.config.from_object('config')
 
-connection = MongoClient(MONGODB_HOST, MONGODB_PORT)
-database = connection[DATABASE]
-
-dao = topSongsDAO.TopSongsDAO(database)
+try:
+    connection = MongoClient(CONNECTION_STRING)
+    database = connection[DATABASE]
+    dao = topSongsDAO.TopSongsDAO(database)
+except Exception, e:
+    raise e
 
 # uncomment to trigger updates
 # dao.update_all_song_stats()
